@@ -40,11 +40,15 @@
 Использоваться Rider:
 
 Welcome to the Calc
+
 Input first number: 12
+
 Input action sign: *
+
 Input second number: 2
+
 Product is: 24
+
 To exit press any key... 
- You entered an invalid input
-Available operations: +, -, *, /, %, i, 2, √, M+, M-, MR
-To exit press any key... 
+
+

@@ -19,17 +19,18 @@ namespace CalendarApp
         private Button _searchButton;
         private Button _statsButton;
         private Button _dataManagerButton;
+        private Button _leapYearButton;
 
         public MainCalendarForm()
         {
             _calendarService = new CalendarService();
 
-            // Запускаем сервин напоминаний
             var reminderService = new ReminderService(_calendarService);
 
             InitializeComponent();
-            InitializeSearchPanel();    // Добавляем поиск
-            InitializeStatsButton();    // Добавляем статистику
+            InitializeSearchPanel();
+            InitializeStatsButton();
+            InitializeLeapYearButton();
         }
 
         private void InitializeComponent()
@@ -40,7 +41,6 @@ namespace CalendarApp
             BackColor = Color.White;
             Padding = new Padding(10);
 
-            // Заголовок
             var headerLabel = new Label
             {
                 Text = "📅 Вечный Календарь",
@@ -51,7 +51,6 @@ namespace CalendarApp
                 TextAlign = ContentAlignment.MiddleLeft
             };
 
-            // Текущая дата
             _dateLabel = new Label
             {
                 Text = $"Сегодня: {DateTime.Today:dd MMMM yyyy}",
@@ -61,7 +60,6 @@ namespace CalendarApp
                 Location = new Point(20, 60)
             };
 
-            // Календарь
             _monthCalendar = new MonthCalendar
             {
                 Location = new Point(20, 100),
@@ -72,7 +70,6 @@ namespace CalendarApp
             };
             _monthCalendar.DateChanged += MonthCalendar_DateChanged;
 
-            // Кнопки
             _addEventButton = new Button
             {
                 Text = "➕ Добавить событие",
@@ -95,7 +92,6 @@ namespace CalendarApp
             };
             _weekViewButton.Click += WeekViewButton_Click;
 
-            // Список событий
             var eventsLabel = new Label
             {
                 Text = "События на выбранную дату:",
@@ -112,7 +108,6 @@ namespace CalendarApp
                 BorderStyle = BorderStyle.FixedSingle
             };
 
-            // Статусная строка
             var statusLabel = new Label
             {
                 Text = "Готов к работе",
@@ -137,9 +132,38 @@ namespace CalendarApp
             LoadEventsForDate(DateTime.Today);
         }
 
+        private void InitializeLeapYearButton()
+        {
+            _leapYearButton = new Button
+            {
+                Text = "🗓️ Високосный год",
+                Location = new Point(20, 420),
+                Size = new Size(140, 35),
+                BackColor = Color.FromArgb(255, 140, 0),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat
+            };
+            _leapYearButton.Click += LeapYearButton_Click;
+
+            this.Controls.Add(_leapYearButton);
+        }
+
+        private void LeapYearButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var leapYearForm = new LeapYearForm();
+                leapYearForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка открытия проверки високосного года: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void InitializeSearchPanel()
         {
-            // Панель поиска
             var searchPanel = new Panel
             {
                 Location = new Point(350, 20),
@@ -237,7 +261,6 @@ namespace CalendarApp
                 var dataManagerForm = new DataManagerForm(_calendarService);
                 dataManagerForm.ShowDialog();
 
-                // Обновляем список событий после управления данными
                 LoadEventsForDate(_monthCalendar.SelectionStart);
             }
             catch (Exception ex)
